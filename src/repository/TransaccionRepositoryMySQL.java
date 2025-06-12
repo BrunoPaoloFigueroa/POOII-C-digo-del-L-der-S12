@@ -13,9 +13,9 @@ public class TransaccionRepositoryMySQL {
 
     private Connection connection;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/nombre_base_de_datos?useSSL=false&serverTimezone=UTC";
-    private static final String USUARIO = "tu_usuario";
-    private static final String CONTRASENA = "tu_contraseña";
+    private static final String URL = "jdbc:mysql://localhost:3306/banco";
+    private static final String USUARIO = "root";
+    private static final String CONTRASENA = "T3csup5629";
 
     public TransaccionRepositoryMySQL() {
         try {

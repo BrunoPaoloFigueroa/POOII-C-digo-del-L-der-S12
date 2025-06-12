@@ -14,7 +14,7 @@ public class PagoServiciosStrategy implements TransaccionStrategy {
                 System.err.println("Referencia inválida");
                 return false;
             }
-            boolean promocion = true;  // Simulado
+            boolean promocion = true;
             double montoFinal = transaccion.getMonto();
             if (promocion) {
                 montoFinal = montoFinal * 0.95;  // 5% descuento

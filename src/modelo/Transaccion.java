@@ -8,13 +8,13 @@ public class Transaccion {
     }
 
     private int id;
-    private TipoTransaccion tipo;  // ahora es String, no enum
+    private TipoTransaccion tipo;
     private double monto;
     private String cuentaOrigen;
     private String cuentaDestino;
     private String referencia;
     private double comision;
-    private String fecha;  // fecha en formato String "YYYY-MM-DD HH:mm:ss"
+    private String fecha;
 
     public Transaccion(TipoTransaccion tipo, double monto, String cuentaOrigen,
                        String cuentaDestino, String referencia, Double comision) {

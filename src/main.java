@@ -1,65 +1,42 @@
 import modelo.Transaccion;
+import repository.CuentaRepositoryMySQL;
 import repository.TransaccionRepositoryMySQL;
-import servicio.ProcesadorTransacciones;
-import strategy.DepositoStrategy;
-import strategy.PagoServiciosStrategy;
-import strategy.TransferenciaStrategy;
-
-import java.util.List;
+import servicio.*;
+import strategy.*;
 
 public class main {
-
     public static void main(String[] args) {
+        CuentaRepositoryMySQL cuentaRepo = new CuentaRepositoryMySQL();
+        TransaccionRepositoryMySQL transaccionRepo = new TransaccionRepositoryMySQL();
 
-        // Crear el repositorio (suponiendo que lo tienes implementado)
-        TransaccionRepositoryMySQL repo = new TransaccionRepositoryMySQL();
+        ProcesadorTransacciones procesador = new ProcesadorTransacciones(transaccionRepo);
+        GestorSaldos gestorSaldos = new GestorSaldos(cuentaRepo);
 
-        // Crear el procesador de transacciones
-        ProcesadorTransacciones procesador = new ProcesadorTransacciones(repo);
-
-        // 1. Crear una transferencia
-        Transaccion transferencia = new Transaccion(
-                Transaccion.TipoTransaccion.TRANSFERENCIA,
-                1500.00,
-                "1234567890",
-                "9876543210",
-                null,
-                null
-        );
-        // Asignar la estrategia transferencia
-        procesador.setEstrategia(new TransferenciaStrategy());
-        procesador.procesarTransaccion(transferencia);
-
-        // 2. Crear un depósito
         Transaccion deposito = new Transaccion(
-                Transaccion.TipoTransaccion.DEPOSITO,
-                500.00,
-                null,
-                "1234567890",
-                "Depósito móvil",
-                null
-        );
-        // Asignar la estrategia deposito
+                Transaccion.TipoTransaccion.DEPOSITO, 300.0,
+                "SERV001", "CU456", "Depósito móvil", null);
         procesador.setEstrategia(new DepositoStrategy());
         procesador.procesarTransaccion(deposito);
+        gestorSaldos.aplicarTransaccion("DEPOSITO", deposito.getMonto(),
+                null, deposito.getCuentaDestino(), null);
+        gestorSaldos.imprimirEstadoTransaccion("DEPOSITO", true, deposito);
 
-        // 3. Crear un pago de servicio
         Transaccion pagoServicio = new Transaccion(
-                Transaccion.TipoTransaccion.PAGO_SERVICIO,
-                250.00,
-                null,
-                "1234567890",
-                "Factura-12345",
-                null
-        );
-        // Asignar la estrategia pago de servicios
+                Transaccion.TipoTransaccion.PAGO_SERVICIO, 150.0,
+                "CU123", "SERV001", "FACT-12345", null);
         procesador.setEstrategia(new PagoServiciosStrategy());
         procesador.procesarTransaccion(pagoServicio);
+        gestorSaldos.aplicarTransaccion("PAGO_SERVICIO", pagoServicio.getMonto(),
+                pagoServicio.getCuentaOrigen(), pagoServicio.getCuentaDestino(), pagoServicio.getReferencia());
+        gestorSaldos.imprimirEstadoTransaccion("PAGO_SERVICIO", true, pagoServicio);
+
+        Transaccion pagoServicio1 = new Transaccion(
+        Transaccion.TipoTransaccion.PAGO_SERVICIO, 150.0,
+                "zzz", "Saa", "FACT-12345", null);
+        procesador.setEstrategia(new PagoServiciosStrategy());
+        procesador.procesarTransaccion(pagoServicio1);
+        gestorSaldos.aplicarTransaccion("PAGO_SERVICIO", pagoServicio1.getMonto(),
+                pagoServicio1.getCuentaOrigen(), pagoServicio1.getCuentaDestino(), pagoServicio1.getReferencia());
+        gestorSaldos.imprimirEstadoTransaccion("PAGO_SERVICIO", true, pagoServicio1);
     }
-
-
-
-
-
-
 }
